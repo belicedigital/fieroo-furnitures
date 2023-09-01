@@ -106,14 +106,6 @@
                                             </select>
                                         </div>
                                     </div>
-                                    {{--<div class="col-xs-12 col-sm-12 col-md-12">
-                                        <div class="form-group mb-2">
-                                            <div class="icheck-primary d-inline">
-                                                <input type="checkbox" id="is_supplied_en" name="is_supplied_en" class="form-check-input" readonly disabled>
-                                                <label for="is_supplied_en" class="form-check-label">{{trans('tables.supplied')}}</label>
-                                            </div>
-                                        </div>
-                                    </div>--}}
                                     <div class="col-xs-12 col-sm-12 col-md-12">
                                         <div class="form-group">
                                             <strong>{{trans('tables.size')}}</strong>

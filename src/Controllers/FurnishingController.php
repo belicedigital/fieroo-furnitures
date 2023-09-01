@@ -115,7 +115,7 @@ class FurnishingController extends Controller
             
             $furnishing = Furnishing::create([
                 'size' => $request->size,
-                'price' => $request->price,
+                'price' => $request->price ?? 0,
                 'file_path' => $rename_file,
                 'color' => $request->color,
                 'is_variant' => 0,
@@ -183,7 +183,7 @@ class FurnishingController extends Controller
             
             $furnishing = Furnishing::create([
                 'size' => $request->size,
-                'price' => $request->price,
+                'price' => $request->price ?? 0,
                 'file_path' => $rename_file,
                 'color' => $request->color,
                 'is_variant' => 1,
@@ -279,7 +279,7 @@ class FurnishingController extends Controller
             $update_data = [
                 'color' => $request->color,
                 'size' => $request->size,
-                'price' => $request->price,
+                'price' => $request->price ?? 0,
                 'is_variant' => 0,
                 'variant_id' => null,
                 'extra_price' => 0
@@ -378,7 +378,7 @@ class FurnishingController extends Controller
         try {
 
             $update_data = [
-                'price' => $request->price,
+                'price' => $request->price ?? 0,
                 'color' => $request->color,
                 'extra_price' => !is_null($request->extra_price) ? 1 : 0
             ];
