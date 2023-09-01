@@ -13,7 +13,8 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <img src="{{asset('upload/furnishings/'.$variant_data->file_path)}}" class="w-25">
+                    <img src="{{asset('img/furnishings/'.$variant_data->file_path)}}" class="w-25">
+                    {{-- <img src="{{asset('upload/furnishings/'.$variant_data->file_path)}}" class="w-25"> --}}
                 </div>
                 <div class="card-body">
                     <form action="{{route('furnishings.update-variant', $variant_data->id)}}" method="POST" enctype="multipart/form-data">
