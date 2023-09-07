@@ -31,6 +31,7 @@
                                         <th>{{trans('tables.description')}}</th>
                                         <th>{{trans('tables.price')}} €</th>
                                         <th>{{trans('tables.size')}}</th>
+                                        <th>{{trans('tables.color')}}</th>
                                         <th class="no-sort">{{trans('tables.image')}}</th>
                                         <th class="no-sort">{{trans('tables.actions')}}</th>
                                     </tr>
@@ -41,6 +42,7 @@
                                         <td>{{\Str::limit($furnishing->description, 50)}}</td>
                                         <td>{{$furnishing->price}}</td>
                                         <td>{{$furnishing->size}}</td>
+                                        <td>{{$furnishing->color}}</td>
                                         <td><img src="{{asset('img/furnishings/'.$furnishing->file_path)}}" class="table-img"></td>
                                         <td>
                                             <div class="btn-group btn-group" role="group">
@@ -65,6 +67,7 @@
                                         <th>{{trans('tables.description')}}</th>
                                         <th>{{trans('tables.price')}}</th>
                                         <th>{{trans('tables.size')}}</th>
+                                        <th>{{trans('tables.color')}}</th>
                                         <th class="no-sort">{{trans('tables.image')}}</th>
                                         <th class="no-sort">{{trans('tables.actions')}}</th>
                                     </tr>
@@ -75,6 +78,7 @@
                                         <td>{{\Str::limit($furnishing->description, 50)}}</td>
                                         <td>{{$furnishing->price}}</td>
                                         <td>{{$furnishing->size}}</td>
+                                        <td>{{$furnishing->color}}</td>
                                         <td><img src="{{asset('img/furnishings/'.$furnishing->file_path)}}" class="table-img"></td>
                                         <td>
                                             <div class="btn-group btn-group" role="group">
