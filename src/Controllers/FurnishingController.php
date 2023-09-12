@@ -30,7 +30,7 @@ class FurnishingController extends Controller
     {
         $all_furnishings = DB::table('furnishings_translations')
             ->leftJoin('furnishings','furnishings_translations.furnishing_id','=','furnishings.id')
-            ->select('furnishings.price','furnishings.size','furnishings.file_path','furnishings_translations.*')
+            ->select('furnishings.color', 'furnishings.price','furnishings.size','furnishings.file_path','furnishings_translations.*')
             ->get();
         $it_furnishings = [];
         $en_furnishings = [];
