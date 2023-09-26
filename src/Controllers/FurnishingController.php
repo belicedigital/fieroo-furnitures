@@ -6,21 +6,14 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\App;
 use Fieroo\Furnitures\Models\Furnishing;
+use Fieroo\Furnitures\Models\FurnishingTranslation;
+use Fieroo\Furnitures\Models\FurnishingStandType;
+use Fieroo\Stands\Models\StandsTypeTranslation;
 use Validator;
 use DB;
 
 class FurnishingController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
-    // }
-
     /**
      * Display a listing of the resource.
      *
@@ -28,35 +21,18 @@ class FurnishingController extends Controller
      */
     public function index()
     {
-        $all_furnishings = DB::table('furnishings_translations')
-            ->leftJoin('furnishings','furnishings_translations.furnishing_id','=','furnishings.id')
-            ->select('furnishings.color', 'furnishings.price','furnishings.size','furnishings.file_path','furnishings_translations.*')
-            ->get();
-        $it_furnishings = [];
-        $en_furnishings = [];
-        foreach($all_furnishings as $furnishing) {
-            if($furnishing->locale === 'it') {
-                array_push($it_furnishings, $furnishing);
-            } else {
-                array_push($en_furnishings, $furnishing);
-            }
-        }
+        $it_furnishings = FurnishingTranslation::where('locale','it')->get();
+        $en_furnishings = FurnishingTranslation::where('locale','en')->get();
         return view('furnitures::index', ['it_furnishings' => $it_furnishings, 'en_furnishings' => $en_furnishings]);
     }
 
     public function indexVariant($id)
     {
-        $list = DB::table('furnishings')->where('variant_id', '=', $id)->get();
-        $furnishing = DB::table('furnishings_translations')
-            ->leftJoin('furnishings', 'furnishings_translations.furnishing_id', '=', 'furnishings.id')
-            ->where([
-                ['furnishings.id', '=', $id],
-                ['furnishings_translations.locale', '=', App::getLocale()]
-            ])
-            ->select('furnishings_translations.description')
-            ->first();
+        $furnishing = Furnishing::findOrFail($id);
+        $list = $furnishing->variants;
+        $translation = $furnishing->translations()->where('locale',App::getLocale())->firstOrFail();
 
-        return view('furnitures::variants.index', ['list' => $list, 'furnishing_id' => $id, 'furnishing_description' => $furnishing->description]);
+        return view('furnitures::variants.index', ['list' => $list, 'furnishing_id' => $id, 'furnishing_description' => $translation->description]);
     }
 
     /**
@@ -71,16 +47,10 @@ class FurnishingController extends Controller
 
     public function createVariant($id)
     {
-        $furnishing = DB::table('furnishings')
-            ->leftJoin('furnishings_translations', 'furnishings.id', '=', 'furnishings_translations.furnishing_id')
-            ->where([
-                ['furnishings_translations.locale', '=', 'it'],
-                ['furnishings.id', '=', $id]
-            ])
-            ->select('furnishings_translations.description', 'furnishings.*')
-            ->first();
+        $furnishing = Furnishing::findOrFail($id);
+        $translation = $furnishing->translations()->where('locale','it')->firstOrFail();
 
-        return view('furnitures::variants.create', ['furnishing' => $furnishing]);
+        return view('furnitures::variants.create', ['furnishing' => $furnishing, 'description' => $translation->description]);
     }
 
     /**
@@ -127,7 +97,7 @@ class FurnishingController extends Controller
                 $is_supplied = 'is_supplied_'.$stand_type_id;
                 $min = 'min_'.$stand_type_id;
                 $max = 'max_'.$stand_type_id;
-                DB::table('furnishings_stands_types')->insert([
+                FurnishingStandType::create([
                     'stand_type_id' => $stand_type_id,
                     'furnishing_id' => $furnishing->id,
                     'is_supplied' => isset($request->$is_supplied) ? 1 : 0,
@@ -136,7 +106,7 @@ class FurnishingController extends Controller
                 ]);
             }
 
-            $furnishing_translations = DB::table('furnishings_translations')->insert([
+            FurnishingTranslation::insert([
                 [
                     'furnishing_id' => $furnishing->id,
                     'locale' => 'it',
@@ -220,32 +190,16 @@ class FurnishingController extends Controller
      */
     public function edit($id)
     {
-        $furnishing = DB::table('furnishings_translations')
-            ->leftJoin('furnishings','furnishings_translations.furnishing_id','=','furnishings.id')
-            ->where('furnishings_translations.id', '=', $id)
-            ->select('furnishings_translations.*','furnishings.size','furnishings.price','furnishings.color','furnishings.file_path')
-            ->first();
-        if(is_null($furnishing) || !is_object($furnishing)) {
-            abort(404);
-        }
-        $only_stands_types_id = DB::table('furnishings_stands_types')->where('furnishing_id', '=', $furnishing->furnishing_id)->pluck('stand_type_id');
-
-        return view('furnitures::edit', ['furnishing' => $furnishing, 'only_stands_types_id' => $only_stands_types_id]);
+        $translation = FurnishingTranslation::findOrFail($id);
+        $only_stands_types_id = $translation->furnishing->stands()->pluck('stand_type_id');
+        
+        return view('furnitures::edit', ['translation' => $translation, 'furnishing' => $translation->furnishing, 'only_stands_types_id' => $only_stands_types_id]);
     }
 
     public function editVariant($parent_id, $id)
     {
-        $variant_data = DB::table('furnishings')
-            ->where([
-                ['variant_id', '=', $parent_id],
-                ['id', '=', $id],
-            ])
-            ->first();
-            
-        $parent_data = DB::table('furnishings_translations')->where([
-            ['furnishing_id', '=', $parent_id],
-            ['locale', '=', 'it']
-        ])->first();
+        $variant_data = Furnishing::findOrFail($id);
+        $parent_data = $variant_data->parent->translations()->where('locale','it')->firstOrFail();
 
         return view('furnitures::variants.edit', ['variant_data' => $variant_data, 'parent_id' => $parent_id, 'description' => $parent_data->description]);
     }
@@ -287,16 +241,17 @@ class FurnishingController extends Controller
 
             if($request->hasFile('file')) {
                 $file_path = Furnishing::findOrFail($request->furnishing_id)->file_path;
-                unlink(public_path('upload/furnishings/'.$file_path));
+                unlink(public_path('img/furnishings/'.$file_path));
                 $image = $request->file('file');
                 $rename_file = time().'.'.$request->file->getClientOriginalExtension();
                 $request->file->storeAs('furnishings', $rename_file, ['disk' => 'upload']);
                 $update_data['file_path'] = $rename_file;
             }
             
-            $furnishing = Furnishing::find($request->furnishing_id)->update($update_data);
+            $furnishing = Furnishing::findOrFail($request->furnishing_id);
+            $furnishing->update($update_data);
 
-            $old_furnishings_stands_types = DB::table('furnishings_stands_types')->where('furnishing_id', '=', $request->furnishing_id)->pluck('stand_type_id')->toArray();
+            $old_furnishings_stands_types = $furnishing->stands()->pluck('stand_type_id')->toArray();
 
             // insert the new ones that are not in the old array
             foreach($request->stand_type_id as $index => $stand_type_id) {
@@ -314,7 +269,7 @@ class FurnishingController extends Controller
                         ->withErrors([ trans('messages.min_greater_than_max') ]);
                 }
                 if(!in_array($stand_type_id, $old_furnishings_stands_types)) {
-                    DB::table('furnishings_stands_types')->insert([
+                    FurnishingStandType::create([
                         'stand_type_id' => $stand_type_id,
                         'furnishing_id' => $request->furnishing_id,
                         'is_supplied' => isset($request->$is_supplied) ? 1 : 0,
@@ -322,7 +277,7 @@ class FurnishingController extends Controller
                         'max' => isset($request->$max) ? $request->$max : null,
                     ]);
                 } else {
-                    DB::table('furnishings_stands_types')->where([
+                    FurnishingStandType::where([
                         ['stand_type_id', '=', $stand_type_id],
                         ['furnishing_id', '=', $request->furnishing_id]
                     ])->update([
@@ -336,16 +291,16 @@ class FurnishingController extends Controller
             // delete the old ones that are not in the new array
             foreach($old_furnishings_stands_types as $index => $stand_type_id) {
                 if(!in_array($stand_type_id, $request->stand_type_id)) {
-                    DB::table('furnishings_stands_types')->where([
+                    FurnishingStandType::where([
                         ['stand_type_id', '=', $stand_type_id],
                         ['furnishing_id', '=', $request->furnishing_id]
                     ])->delete();
                 }
             }
 
-            $furnishing_translations = DB::table('furnishings_translations')->where('id','=',$id)->update([
-                'description' => $request->description,
-            ]);
+            $furnishing_translations = FurnishingTranslation::findOrFail($id);
+            $furnishing_translations->description = $request->description;
+            $furnishing_translations->save();
 
             $entity_name = trans('entities.furnishing');
             return redirect('admin/furnishings')->with('success', trans('forms.updated_success',['obj' => $entity_name]));
@@ -384,7 +339,7 @@ class FurnishingController extends Controller
             ];
             if($request->hasFile('file')) {
                 $file_path = Furnishing::findOrFail($request->furnishing_id)->file_path;
-                unlink(public_path('upload/furnishings/'.$file_path));
+                unlink(public_path('img/furnishings/'.$file_path));
                 $image = $request->file('file');
                 $rename_file = time().'.'.$request->file->getClientOriginalExtension();
                 $request->file->storeAs('furnishings', $rename_file, ['disk' => 'upload']);
@@ -412,7 +367,8 @@ class FurnishingController extends Controller
 
         try {
             $response['status'] = true;
-            $response['data'] = DB::table('stands_types_translations')->where('locale','=','it')->select('stand_type_id','name','size')->get();
+            $response['data'] = StandsTypeTranslation::where('locale','it')->get();
+            // $response['data'] = DB::table('stands_types_translations')->where('locale','=','it')->select('stand_type_id','name','size')->get();
             return response()->json($response);
         } catch(\Exception $e){
             $response['message'] = $e->getMessage();
@@ -460,6 +416,19 @@ class FurnishingController extends Controller
         }
     }
 
+    private function _destroy($id, $is_variant = false)
+    {
+        $furnishing = Furnishing::findOrFail($id);
+        unlink(public_path('img/furnishings/'.$furnishing->file_path));
+        foreach($furnishing->variants as $variant) {
+            unlink(public_path('img/furnishings/'.$variant->file_path));
+        }
+        $furnishing->delete();
+        $entity_name = $is_variant ? trans('entities.variant') : trans('entities.furnishings');
+        $view = $is_variant ? 'admin/furnishings/'.$furnishing->variant_id.'/variants' : 'admin/furnishings';
+        return redirect($view)->with('success', trans('forms.deleted_success',['obj' => $entity_name]));
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -468,19 +437,11 @@ class FurnishingController extends Controller
      */
     public function destroy($id)
     {
-        $file_path = Furnishing::findOrFail($id)->file_path;
-        unlink(public_path('upload/furnishings/'.$file_path));
-        Furnishing::findOrFail($id)->delete();
-        $entity_name = trans('entities.furnishings');
-        return redirect('admin/furnishings')->with('success', trans('forms.deleted_success',['obj' => $entity_name]));
+        return self::_destroy($id);
     }
 
     public function destroyVariant($id)
     {
-        $furnishing = Furnishing::findOrFail($id);
-        unlink(public_path('upload/furnishings/'.$furnishing->file_path));
-        Furnishing::findOrFail($id)->delete();
-        $entity_name = trans('entities.variant');
-        return redirect('admin/furnishings/'.$furnishing->variant_id.'/variants')->with('success', trans('forms.deleted_success',['obj' => $entity_name]));
+        return self::_destroy($id, true);
     }
 }
