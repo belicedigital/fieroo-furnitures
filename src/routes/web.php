@@ -1,11 +1,12 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use Fieroo\Furnitures\Controllers\FurnishingController;
-    
+
 Route::group(['prefix' => 'admin', 'middleware' => ['web','auth']], function() {
     Route::resource('/furnishings', FurnishingController::class);
     Route::post('/furnishings/stands', [FurnishingController::class, 'getStandsList']);
     Route::post('/furnishings/stands_types', [FurnishingController::class, 'getStandType']);
+    Route::post('/furnishings/store', [FurnishingController::class, 'store'])->name('furnishings.store');
     Route::get('/furnishings/{id}/variants', [FurnishingController::class, 'indexVariant']);
     Route::get('/furnishings/{id}/variants/create', [FurnishingController::class, 'createVariant']);
     Route::get('/furnishings/{id}/variants/{variant}/edit', [FurnishingController::class, 'editVariant']);
