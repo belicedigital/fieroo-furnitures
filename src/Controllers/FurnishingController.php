@@ -11,6 +11,7 @@ use Fieroo\Furnitures\Models\FurnishingStandType;
 use Fieroo\Stands\Models\StandsTypeTranslation;
 use Validator;
 use DB;
+use Illuminate\Support\Facades\Http;
 
 class FurnishingController extends Controller
 {
