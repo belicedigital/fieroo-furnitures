@@ -79,6 +79,16 @@ class FurnishingController extends Controller
 
         try {
 
+            // check events limit for subscription
+            $request_to_api = Http::get('https://manager-fieroo.belicedigital.com/api/stripe/'.env('CUSTOMER_EMAIL').'/check-limit/max_arredi');
+            if (!$request_to_api->successful()) {
+                throw new \Exception('API Error on get latest subscription');
+            }
+            $result_api = $request_to_api->json();
+            if(Furnishing::all()->count() >= $result_api->value) {
+                throw new \Exception('Hai superato il limite di Arredi previsti dal tuo piano di abbonamento, per inserire altri Arredi dovrai passare ad un altro piano aumentando il limite di arredi disponibili.');
+            }
+
             $image = $request->file('file');
             $rename_file = time().'.'.$request->file->getClientOriginalExtension();
             $request->file->storeAs('furnishings', $rename_file);
