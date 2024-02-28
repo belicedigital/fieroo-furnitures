@@ -72,7 +72,7 @@
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-12">
                                     <div class="form-group">
-                                        <strong>{{ trans('tables.price') }}</strong>
+                                        <strong>{{ trans('tables.price') }} ({{ trans('generals.tax_excl') }})</strong>
                                         <input type="text" name="price" class="form-control"
                                             value="{{ $furnishing->price }}">
                                     </div>
