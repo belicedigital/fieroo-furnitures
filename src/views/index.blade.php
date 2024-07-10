@@ -201,13 +201,13 @@
                                     aria-selected="false">EN</button>
                             </li>
                         </ul>
-                        <div class="dt-action-buttons text-end pt-3 pt-md-0">
+                        {{-- <div class="dt-action-buttons text-end pt-3 pt-md-0">
                             <a href="{{ url('admin/furnishings/create') }}"
                                 class="btn btn-secondary create-new btn-primary waves-effect waves-light"
                                 data-toggle="tooltip" data-placement="bottom"><span><i class="ti ti-plus me-sm-1"></i>
                                     <span class="d-none d-sm-inline-block">{{ trans('generals.add') }}</span>
                                 </span></a>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="tab-content" id="custom-tabs-one-tabContent">
                         <div class="tab-pane fade show active" id="it-pages-tab" role="tabpanel" aria-labelledby="it-tab">
@@ -314,8 +314,7 @@
     <!-- Table -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}">
-    <link rel="stylesheet"
-        href="{{ asset('assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css') }}">
 @endsection
 
