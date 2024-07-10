@@ -249,9 +249,11 @@
 @section('title', trans('crud.new', ['obj' => trans('entities.furnishing')]))
 @section('title_header', trans('crud.new', ['obj' => trans('entities.furnishing')]))
 
-@section('buttons')
-    <a href="{{ url('admin/furnishings') }}" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom"
-        title="{{ trans('generals.back') }}"><i class="fas fa-chevron-left"></i></a>
+@section('button')
+    <a href="{{ url('admin/furnishings') }}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="bottom"
+        data-bs-original-title="{{ trans('generals.back') }}"><i class="fas fa-chevron-left"></i></a>
+    {{-- <a href="{{ url('admin/furnishings') }}" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom"
+        title="{{ trans('generals.back') }}"><i class="fas fa-chevron-left"></i></a> --}}
 @endsection
 
 @section('path', trans('entities.furnishings'))
@@ -413,8 +415,6 @@
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 text-end">
                             <button type="submit" class="btn btn-primary">{{ trans('generals.save') }}</button>
-                            <a href="{{ url('admin/furnishings') }}"
-                                class="btn btn-label-secondary">{{ trans('generals.cancel') }}</a>
                         </div>
                     </form>
                 </div>

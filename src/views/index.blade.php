@@ -174,9 +174,11 @@
 @extends('layouts/layoutMaster')
 @section('title', trans('entities.furnishings'))
 @section('title_header', trans('entities.furnishings'))
-@section('buttons')
-    <a href="{{ url('admin/furnishings/create') }}" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom"
-        title="{{ trans('generals.add') }}"><i class="fas fa-plus"></i></a>
+@section('button')
+    <a href="{{ url('admin/furnishings/create') }}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="bottom"
+        data-bs-original-title="{{ trans('generals.add') }}"><i class="fas fa-plus"></i></a>
+    {{-- <a href="{{ url('admin/furnishings/create') }}" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom"
+        title="{{ trans('generals.add') }}"><i class="fas fa-plus"></i></a> --}}
 @endsection
 
 @section('path', trans('entities.furnishings'))

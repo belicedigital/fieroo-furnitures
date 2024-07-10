@@ -84,11 +84,16 @@
 @section('title_header', trans('entities.variants') . ' ' . $furnishing_description)
 
 @section('button')
-    <a href="{{ url('admin/furnishings/' . $furnishing_id . '/variants/create') }}"
-        class="btn btn-secondary create-new btn-primary waves-effect waves-light" data-toggle="tooltip"
-        data-placement="bottom"><span><i class="ti ti-plus me-sm-1"></i>
-            <span class="d-none d-sm-inline-block">{{ trans('generals.add') }}</span>
-        </span></a>
+    <a href="{{ url('admin/furnishings/') }}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="bottom"
+        data-bs-original-title="{{ trans('generals.back') }}"><i class="fas fa-chevron-left"></i></a>
+    <a href="{{ url('admin/furnishings/' . $furnishing_id . '/variants/create') }}" class="btn btn-primary"
+        data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{{ trans('generals.add') }}"><i
+            class="fas fa-plus"></i></a>
+
+    {{-- <a href="{{ url('admin/furnishings') }}" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom"
+        title="{{ trans('generals.back') }}"><i class="fas fa-chevron-left"></i></a>
+    <a href="{{ url('admin/furnishings/' . $furnishing_id . '/variants/create') }}" class="btn btn-primary"
+        data-toggle="tooltip" data-placement="bottom" title="{{ trans('generals.add') }}"><i class="fas fa-plus"></i></a> --}}
 @endsection
 
 @section('path', trans('entities.furnishings'))
@@ -135,10 +140,6 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        <div class="col-xs-12 col-sm-12 col-md-12 text-end mt-3">
-                            <a href="{{ url('admin/furnishings') }}"
-                                class="btn btn-outline-primary">{{ trans('generals.back') }}</a>
-                        </div>
                     </div>
                 </div>
             </div>
