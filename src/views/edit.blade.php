@@ -250,6 +250,9 @@
                                 </div>
                             </div>
                             <div class="card d-none col-md-12 mb-3" data-stand-placeholder>
+                                <div class="card-header">
+                                    <h5></h5>
+                                </div>
                                 <div class="card-body">
                                     <div class="col-xs-12 col-sm-12 col-md-12">
                                         <div class="form-group mb-2">
